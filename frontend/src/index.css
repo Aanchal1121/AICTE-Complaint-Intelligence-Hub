@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  }
+}
+
+/* Custom Accessibility: High Contrast Mode */
+.high-contrast {
+  filter: contrast(1.35) brightness(1.05);
+}
+
+.high-contrast body {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* Accessible text scaling */
+html.text-large {
+  font-size: 115%;
+}
+
+/* Glow and pulse animations */
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.82;
+    transform: scale(1.03);
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2.5s infinite ease-in-out;
+}
+
+/* Custom sleek scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.05);
+}
+.dark ::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(14, 116, 144, 0.4);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(14, 116, 144, 0.8);
+}
