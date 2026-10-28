@@ -90,30 +90,15 @@ aicte-complaint-intelligence-hub/
 │       │       └── NotificationCenter.tsx
 │       ├── pages/
 │       │   ├── LoginPage.tsx
-│       │   ├── student/
-│       │   │   ├── StudentHomePage.tsx
-│       │   │   ├── FileComplaintPage.tsx
-│       │   │   ├── TrackComplaintPage.tsx
-│       │   │   └── FeedbackPage.tsx
-│       │   ├── official/
-│       │   │   ├── OfficialInboxPage.tsx
-│       │   │   ├── ComplaintDetailPage.tsx
-│       │   │   ├── InstitutionSearchPage.tsx
-│       │   │   ├── Institution360Page.tsx
-│       │   │   ├── ReferralsPage.tsx
-│       │   │   └── SlaTrackerPage.tsx
-│       │   ├── bureau-head/
-│       │   │   └── BureauWorkloadPage.tsx
-│       │   ├── regional/
-│       │   │   └── RegionalCasesPage.tsx
-│       │   ├── admin/
-│       │   │   ├── NationalDashboardPage.tsx
-│       │   │   ├── RootCauseDashboardPage.tsx
-│       │   │   ├── AnalysisStudioPage.tsx
-│       │   │   ├── ConnectedNetworkPage.tsx
-│       │   │   ├── SettingsPage.tsx
-│       │   │   └── AuditLogPage.tsx
-│       │   └── NotFoundPage.tsx
+│       │   ├── StudentPortal.tsx                  # Student Portal: File (30-day anti-duplicate), Track, Timeline, College Record
+│       │   ├── OfficialWorkspace.tsx              # Official Case Officer & Bureau Head Workspace
+│       │   ├── AdminDashboard.tsx                 # Admin Section 1: National KPI cards, State Heatmap, 12m Pendency, Risky Institutes
+│       │   ├── RootCauseDashboard.tsx             # Admin Section 2: Insights, Process Failures, Treemap, 6 Insight Cards
+│       │   ├── NetworkGraph.tsx                   # Admin Section 3: Full-screen Connected Case Network
+│       │   ├── Institution360.tsx                 # Admin Section 4: Institution Registry, 360 Dossier, Radar Compare, Admin Edit
+│       │   ├── AdminEscalationsPage.tsx           # Admin Section 5: Chairman Escalation Queue & Cross-Bureau Conflicts
+│       │   ├── VisualAnalyticsStudio.tsx          # Admin Section 6: Reports Studio & Downloads
+│       │   └── SettingsPage.tsx                   # Admin Section 7: Users, Rules, Categories, AI Oversight, CSV Import, SHA-256 Audit Log
 │       ├── features/
 │       │   ├── auth/
 │       │   │   ├── auth-api.ts
@@ -198,18 +183,15 @@ aicte-complaint-intelligence-hub/
 │   │   ├── api/
 │   │   │   ├── deps.py
 │   │   │   └── routers/
-│   │   │       ├── auth.py
-│   │   │       ├── institutions.py
-│   │   │       ├── complaints.py
-│   │   │       ├── triage.py
-│   │   │       ├── cases.py
-│   │   │       ├── actions.py
-│   │   │       ├── referrals.py
-│   │   │       ├── reports.py
-│   │   │       ├── network.py
-│   │   │       ├── insights.py
-│   │   │       ├── notifications.py
-│   │   │       └── admin.py
+│   │   │       ├── auth_router.py
+│   │   │       ├── institutions_router.py     # Includes PUT /api/institutions/{id}/admin-edit
+│   │   │       ├── complaints_router.py       # Includes 30-day anti-duplicate filing rule check
+│   │   │       ├── analytics_router.py        # Includes GET /api/analytics/resolution-timeline
+│   │   │       ├── cases_router.py
+│   │   │       ├── network_router.py
+│   │   │       ├── notifications_router.py
+│   │   │       ├── settings_router.py         # Includes escalations, conflicts, AI oversight, CSV import, SHA-256 audit verification
+│   │   │       └── reports_router.py
 │   │   ├── services/
 │   │   │   ├── complaint_service.py
 │   │   │   ├── institution_service.py

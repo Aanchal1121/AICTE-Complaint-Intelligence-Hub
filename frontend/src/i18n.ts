@@ -17,6 +17,7 @@ const resources = {
         networkMap: "Case Network Intelligence",
         rootCause: "Root-Cause Dashboard",
         settings: "Settings & Audit",
+        adminDashboard: "National Leadership Hub",
         logout: "Logout",
         demoScript: "Demo Guide"
       },
@@ -41,6 +42,7 @@ const resources = {
       student: {
         fileComplaint: "File a Complaint",
         trackStatus: "Track Complaint Status",
+        aicteRecord: "AICTE College Record",
         voiceAssistance: "Voice Assistance Mode",
         cameraEvidence: "Camera & OCR Capture",
         anonymousToggle: "Submit as Anonymous Complaint",
@@ -88,6 +90,36 @@ const resources = {
         penalty: "Impose Monetary Penalty",
         resolve: "Mark Resolved",
         close: "Close Case"
+      },
+      govtOfIndia: "Govt. of India",
+      navModules: "Navigation Modules",
+      aiModules: "AI Intelligence Modules",
+      aiFeatures: {
+        classification: "AI Classification",
+        duplicateDetection: "Duplicate Detection",
+        crossDeptAlert: "Cross-Dept Alert",
+        deadlineTracking: "Deadline Tracking",
+        collegeRiskScore: "College Risk Score",
+        rootCauseHub: "Root Cause Hub"
+      },
+      analytics: {
+        badge: "AICTE Report Analysis Visualisation Studio",
+        title: "National Executive Intelligence & Visual Studio",
+        subtitle: "12 integrated interactive analytical visualizers with cross-chart filtering, presentation cycle, and audit exports.",
+        presentationMode: "Presentation Mode",
+        exitPresentation: "Exit Presentation",
+        exportPdf: "Export PDF",
+        exportCsv: "Export CSV",
+        syncFilters: "Sync Filters:",
+        allBureaus: "All Bureaus",
+        allCategories: "All Categories",
+        allStates: "All States",
+        resetFilters: "Reset Filters",
+        totalMonitored: "Total Monitored Grievances",
+        slaCompliance: "SLA Compliance Rate",
+        activeBacklog: "Active Bureau Backlog",
+        avgTurnaround: "Average Resolution Turnaround",
+        aiSynthesis: "AI Synthesis Strip: Plain-Language Findings (Evidence-Linked)"
       }
     }
   },
@@ -106,6 +138,7 @@ const resources = {
         networkMap: "नेटवर्क इंटेलिजेंस",
         rootCause: "मूल-कारण डैशबोर्ड",
         settings: "सेटिंग्स और ऑडिट",
+        adminDashboard: "राष्ट्रीय नेतृत्व हब",
         logout: "लॉगआउट",
         demoScript: "डेमो गाइड"
       },
@@ -130,6 +163,7 @@ const resources = {
       student: {
         fileComplaint: "शिकायत दर्ज करें",
         trackStatus: "शिकायत की स्थिति जांचें",
+        aicteRecord: "AICTE कॉलेज रिकॉर्ड",
         voiceAssistance: "ध्वनि सहायता मोड",
         cameraEvidence: "कैमरा एवं ओसीआर साक्ष्य",
         anonymousToggle: "गुमनाम शिकायत के रूप में दर्ज करें",
@@ -177,6 +211,36 @@ const resources = {
         penalty: "जुर्माना लगाएं",
         resolve: "समाधान चिह्नित करें",
         close: "केस बंद करें"
+      },
+      govtOfIndia: "भारत सरकार",
+      navModules: "नेविगेशन मॉड्यूल",
+      aiModules: "एआई इंटेलिजेंस मॉड्यूल",
+      aiFeatures: {
+        classification: "एआई वर्गीकरण",
+        duplicateDetection: "डुप्लिकेट पहचान",
+        crossDeptAlert: "क्रॉस-विभाग अलर्ट",
+        deadlineTracking: "समय-सीमा ट्रैकिंग",
+        collegeRiskScore: "कॉलेज जोखिम स्कोर",
+        rootCauseHub: "मूल कारण हब"
+      },
+      analytics: {
+        badge: "एआईसीटीई रिपोर्ट विश्लेषण विज़ुअलाइज़ेशन स्टूडियो",
+        title: "राष्ट्रीय कार्यकारी इंटेलिजेंस एवं विज़ुअल स्टूडियो",
+        subtitle: "क्रॉस-चार्ट फ़िल्टरिंग, प्रस्तुति चक्र और ऑडिट निर्यात के साथ 12 एकीकृत विश्लेषणात्मक विज़ुअलाइज़र।",
+        presentationMode: "प्रस्तुति मोड",
+        exitPresentation: "प्रस्तुति समाप्त करें",
+        exportPdf: "पीडीएफ निर्यात",
+        exportCsv: "सीएसवी निर्यात",
+        syncFilters: "सिंक फ़िल्टर:",
+        allBureaus: "सभी ब्यूरो",
+        allCategories: "सभी श्रेणियां",
+        allStates: "सभी राज्य",
+        resetFilters: "फ़िल्टर रीसेट करें",
+        totalMonitored: "कुल निगरानी की गई शिकायतें",
+        slaCompliance: "एसएलए अनुपालन दर",
+        activeBacklog: "सक्रिय ब्यूरो बैकलॉग",
+        avgTurnaround: "औसत समाधान समय",
+        aiSynthesis: "एआई संश्लेषण पट्टी: सरल भाषा निष्कर्ष (साक्ष्य-लिंक)"
       }
     }
   },
@@ -195,6 +259,7 @@ const resources = {
         networkMap: "नेटवर्क इंटेलिजेंस",
         rootCause: "मूळ-कारण डॅशबोर्ड",
         settings: "सेटिंग्ज आणि ऑडिट",
+        adminDashboard: "राष्ट्रीय नेतृत्व हब",
         logout: "बाहेर पडा",
         demoScript: "डेमो मार्गदर्शक"
       },
@@ -219,6 +284,7 @@ const resources = {
       student: {
         fileComplaint: "तक्रार दाखल करा",
         trackStatus: "तक्रारीची स्थिती तपासा",
+        aicteRecord: "एआयसीटीई कॉलेज नोंद",
         voiceAssistance: "व्हॉइस असिस्टंट मोड",
         cameraEvidence: "कॅमेरा आणि ओसीआर पुरावा",
         anonymousToggle: "निनावी तक्रार नोंदवा",
@@ -266,6 +332,36 @@ const resources = {
         penalty: "दंड आकारणी",
         resolve: "निवारण झाले",
         close: "प्रकरण बंद"
+      },
+      govtOfIndia: "भारत सरकार",
+      navModules: "नेव्हिगेशन मॉड्यूल",
+      aiModules: "एआय इंटेलिजन्स मॉड्यूल",
+      aiFeatures: {
+        classification: "एआय वर्गीकरण",
+        duplicateDetection: "डुप्लिकेट तपासणी",
+        crossDeptAlert: "आंतर-विभाग इशारा",
+        deadlineTracking: "मुदत ट्रॅकिंग",
+        collegeRiskScore: "कॉलेज जोखीम स्कोअर",
+        rootCauseHub: "मूळ कारण केंद्र"
+      },
+      analytics: {
+        badge: "एआयसीटीई अहवाल विश्लेषण व्हिज्युअलायझेशन स्टुडिओ",
+        title: "राष्ट्रीय कार्यकारी इंटेलिजन्स आणि व्हिज्युअल स्टुडिओ",
+        subtitle: "क्रॉस-चार्ट फिल्टरिंग, सादरीकरण सायकल आणि ऑडिट निर्यातीसह 12 एकात्मिक विश्लेषणात्मक व्हिज्युअलायझर.",
+        presentationMode: "सादरीकरण मोड",
+        exitPresentation: "सादरीकरण बंद करा",
+        exportPdf: "पीडीएफ निर्यात",
+        exportCsv: "सीएसव्ही निर्यात",
+        syncFilters: "सिंक फिल्टर्स:",
+        allBureaus: "सर्व ब्युरो",
+        allCategories: "सर्व श्रेणी",
+        allStates: "सर्व राज्ये",
+        resetFilters: "फिल्टर रीसेट करा",
+        totalMonitored: "एकूण निरीक्षण केलेल्या तक्रारी",
+        slaCompliance: "एसएलए अनुपालन दर",
+        activeBacklog: "सक्रिय ब्युरो अनुशेष",
+        avgTurnaround: "सरासरी निवारण वेळ",
+        aiSynthesis: "एआय संश्लेषण पट्टी: सोप्या भाषेतील निष्कर्ष (पुराव्यांशी जोडलेले)"
       }
     }
   },
@@ -284,6 +380,7 @@ const resources = {
         networkMap: "নেটওয়ার্ক ইন্টেলিজেন্স",
         rootCause: "মূল-কারণ ড্যাশবোর্ড",
         settings: "সেটিংস ও অডিট",
+        adminDashboard: "জাতীয় নেতৃত্ব হাব",
         logout: "লগআউট",
         demoScript: "ডেমো গাইড"
       },
@@ -308,6 +405,7 @@ const resources = {
       student: {
         fileComplaint: "অভিযোগ দায়ের করুন",
         trackStatus: "অবস্থা পর্যবেক্ষণ করুন",
+        aicteRecord: "এআইসিটিই কলেজ রেকর্ড",
         voiceAssistance: "ভয়েস সহায়তা মোড",
         cameraEvidence: "ক্যামেরা ও ওসিআর",
         anonymousToggle: "বেনামী অভিযোগ",
@@ -355,6 +453,36 @@ const resources = {
         penalty: "জরিমানা আরোপ",
         resolve: "সমাধান হয়েছে",
         close: "কেস বন্ধ"
+      },
+      govtOfIndia: "ভারত সরকার",
+      navModules: "ন্যাভিগেশন মডিউল",
+      aiModules: "এআই ইন্টেলিজেন্স মডিউল",
+      aiFeatures: {
+        classification: "এআই শ্রেণীকরণ",
+        duplicateDetection: "ডুপ্লিকেট সনাক্তকরণ",
+        crossDeptAlert: "আন্তঃবিভাগীয় সতর্কতা",
+        deadlineTracking: "সময়সীমা ট্র্যাকিং",
+        collegeRiskScore: "কলেজ ঝুঁকি স্কোর",
+        rootCauseHub: "মূল কারণ হাব"
+      },
+      analytics: {
+        badge: "এআইসিটিই রিপোর্ট বিশ্লেষণ ভিজ্যুয়ালাইজেশন স্টুডিও",
+        title: "জাতীয় নির্বাহী ইন্টেলিজেন্স ও ভিজ্যুয়াল স্টুডিও",
+        subtitle: "ক্রস-চার্ট ফিল্টারিং, উপস্থাপনা চক্র এবং অডিট রপ্তানি সহ ১২টি সমন্বিত বিশ্লেষণাত্মক ভিজ্যুয়ালাইজার।",
+        presentationMode: "উপস্থাপনা মোড",
+        exitPresentation: "উপস্থাপনা থেকে প্রস্থান",
+        exportPdf: "পিডিএফ রপ্তানি",
+        exportCsv: "সিএসভি রপ্তানি",
+        syncFilters: "সিঙ্ক ফিল্টার:",
+        allBureaus: "সকল ব্যুরো",
+        allCategories: "সকল বিভাগ",
+        allStates: "সকল রাজ্য",
+        resetFilters: "ফিল্টার রিসেট করুন",
+        totalMonitored: "মোট নজরদারিকৃত অভিযোগ",
+        slaCompliance: "এসএলএ সম্মতি হার",
+        activeBacklog: "সক্রিয় ব্যুরো ব্যাকলগ",
+        avgTurnaround: "গড় সমাধানের সময়",
+        aiSynthesis: "এআই সিন্থেসিস স্ট্রিপ: সহজ ভাষার ফলাফল (প্রমাণ-যুক্ত)"
       }
     }
   },
@@ -373,6 +501,7 @@ const resources = {
         networkMap: "நெட்வொர்க் வரைபடம்",
         rootCause: "மூல-காரண பலகை",
         settings: "அமைப்புகள் & தணிக்கை",
+        adminDashboard: "தேசிய தலைமை மையம்",
         logout: "வெளியேறு",
         demoScript: "டெமோ வழிகாட்டி"
       },
@@ -397,6 +526,7 @@ const resources = {
       student: {
         fileComplaint: "புகார் பதிவு செய்க",
         trackStatus: "புகார் நிலை கண்காணிக்க",
+        aicteRecord: "ஏஐசிடிஇ கல்லூரி பதிவு",
         voiceAssistance: "குரல் உதவி முறை",
         cameraEvidence: "கேமரா & OCR ஆதாரம்",
         anonymousToggle: "பெயரற்ற புகார்",
@@ -444,6 +574,36 @@ const resources = {
         penalty: "அபராதம் விதிக்க",
         resolve: "தீர்வு காணப்பட்டது",
         close: "வழக்கு முடிக்கப்பட்டது"
+      },
+      govtOfIndia: "இந்திய அரசு",
+      navModules: "வழிகாட்டல் தொகுதிகள்",
+      aiModules: "ஏஐ நுண்ணறிவு தொகுதிகள்",
+      aiFeatures: {
+        classification: "ஏஐ வகைப்படுத்தல்",
+        duplicateDetection: "நகல் கண்டறிதல்",
+        crossDeptAlert: "துறை-இடை எச்சரிக்கை",
+        deadlineTracking: "காலக்கெடு கண்காணிப்பு",
+        collegeRiskScore: "கல்லூரி இடர் மதிப்பீடு",
+        rootCauseHub: "மூலக் காரணம் மையம்"
+      },
+      analytics: {
+        badge: "ஏஐசிடிஇ அறிக்கை பகுப்பாய்வு காட்சிப்படுத்தல் கூடம்",
+        title: "தேசிய நிர்வாக நுண்ணறிவு மற்றும் காட்சி கூடம்",
+        subtitle: "குறுக்கு-விளக்கப்பட வடிகட்டல், விளக்கக்காட்சி சுழற்சி மற்றும் தணிக்கை ஏற்றுமதிகளுடன் 12 ஒருங்கிணைந்த பகுப்பாய்வு காட்சிப்படுத்திகள்.",
+        presentationMode: "விளக்கக்காட்சி பயன்முறை",
+        exitPresentation: "விளக்கக்காட்சியிலிருந்து வெளியேறு",
+        exportPdf: "PDF ஏற்றுமதி",
+        exportCsv: "CSV ஏற்றுமதி",
+        syncFilters: "வடிகட்டிகள்:",
+        allBureaus: "அனைத்து துறைகளும்",
+        allCategories: "அனைத்து பிரிவுகளும்",
+        allStates: "அனைத்து மாநிலங்கள்",
+        resetFilters: "வடிகட்டிகளை மீட்டமை",
+        totalMonitored: "மொத்த கண்காணிக்கப்பட்ட புகார்கள்",
+        slaCompliance: "SLA இணக்க விகிதம்",
+        activeBacklog: "செயலில் உள்ள துறை நிலுவை",
+        avgTurnaround: "சராசரி தீர்வு நேரம்",
+        aiSynthesis: "ஏஐ பகுப்பாய்வு துண்டு: எளிய மொழி கண்டுபிடிப்புகள் (ஆதார-இணைப்பு)"
       }
     }
   },
@@ -462,6 +622,7 @@ const resources = {
         networkMap: "నెట్‌వర్క్ ఇంటెలిజెన్స్",
         rootCause: "మూల-కారణ డాష్‌బోర్డ్",
         settings: "సెట్టింగ్‌లు & ఆడిట్",
+        adminDashboard: "జాతీయ నాయకత్వ హబ్",
         logout: "లాగౌట్",
         demoScript: "డెమో గైడ్"
       },
@@ -486,6 +647,7 @@ const resources = {
       student: {
         fileComplaint: "ఫిర్యాదు దాఖలు చేయండి",
         trackStatus: "స్థితిని ట్రాక్ చేయండి",
+        aicteRecord: "ఏఐసీటీఈ కళాశాల రికార్డు",
         voiceAssistance: "వాయిస్ సహాయం మోడ్",
         cameraEvidence: "కెమెరా & OCR సాక్ష్యం",
         anonymousToggle: "అనామక ఫిర్యాదు",
@@ -533,20 +695,58 @@ const resources = {
         penalty: "జరిమానా విధించండి",
         resolve: "పరిష్కరించబడింది",
         close: "కేసు మూసివేత"
+      },
+      govtOfIndia: "భారత ప్రభుత్వం",
+      navModules: "నావిగేషన్ మాడ్యూల్స్",
+      aiModules: "ఏఐ ఇంటెలిజెన్స్ మాడ్యూల్స్",
+      aiFeatures: {
+        classification: "ఏఐ వర్గీకరణ",
+        duplicateDetection: "డూప్లికేట్ గుర్తింపు",
+        crossDeptAlert: "క్రాస్-డిపార్ట్మెంట్ హెచ్చరిక",
+        deadlineTracking: "గడువు ట్రాకింగ్",
+        collegeRiskScore: "కళాశాల రిస్క్ స్కోరు",
+        rootCauseHub: "మూల కారణ హబ్"
+      },
+      analytics: {
+        badge: "ఏఐసీటీఈ నివేదిక విశ్లేషణ విజువలైజేషన్ స్టూడియో",
+        title: "జాతీయ కార్యనిర్వాహక ఇంటెలిజెన్స్ & విజువల్ స్టూడియో",
+        subtitle: "క్రాస్-చార్ట్ ఫిల్టరింగ్, ప్రెజెంటేషన్ సైకిల్ మరియు ఆడిట్ ఎగుమతులతో 12 సమగ్ర విశ్లేషణాత్మక విజువలైజర్లు.",
+        presentationMode: "ప్రెజెంటేషన్ మోడ్",
+        exitPresentation: "ప్రెజెంటేషన్ ముగించు",
+        exportPdf: "PDF ఎగుమతి",
+        exportCsv: "CSV ఎగుమతి",
+        syncFilters: "సింక్ ఫిల్టర్లు:",
+        allBureaus: "అన్ని బ్యూరోలు",
+        allCategories: "అన్ని వర్గాలు",
+        allStates: "అన్ని రాష్ట్రాలు",
+        resetFilters: "ఫిల్టర్లను రీసెట్ చేయండి",
+        totalMonitored: "మొత్తం పర్యవేక్షించబడిన ఫిర్యాదులు",
+        slaCompliance: "SLA సమ్మతి రేటు",
+        activeBacklog: "యాక్టివ్ బ్యూరో బ్యాక్‌లాగ్",
+        avgTurnaround: "సగటు పరిష్కార సమయం",
+        aiSynthesis: "ఏఐ సింథసిస్ స్ట్రిప్: సరళ భాషా ఫలితాలు (సాక్ష్యాలతో లింక్)"
       }
     }
   }
 };
 
+const savedLang = typeof window !== 'undefined' ? localStorage.getItem('cih_language') || 'en' : 'en';
+
 i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: 'en',
+    lng: savedLang,
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false
     }
   });
+
+i18n.on('languageChanged', (lng) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('cih_language', lng);
+  }
+});
 
 export default i18n;

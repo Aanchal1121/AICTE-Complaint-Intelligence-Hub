@@ -1,11 +1,13 @@
 import json
+import hashlib
 from typing import Optional, List
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException, Query
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, desc
 from ..database import get_db
-from ..models import Institution, Complaint, CaseGroup, Action, ConflictAlert, User
+from ..models import Institution, Complaint, CaseGroup, Action, ConflictAlert, User, AuditLog
 from ..auth import get_current_user
 
 router = APIRouter(prefix="/api/institutions", tags=["institutions"])
@@ -152,3 +154,70 @@ def get_institution_360(institution_id: str, db: Session = Depends(get_db)):
             "complaint_count": cg.complaint_count
         } for cg in case_groups]
     }
+
+class InstitutionAdminEditRequest(BaseModel):
+    approval_status: str
+    renewal_date: Optional[str] = None
+    court_stay_flag: bool
+    reason_note: str
+
+@router.put("/{institution_id}/admin-edit")
+def admin_edit_institution(
+    institution_id: str,
+    req: InstitutionAdminEditRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Admin control over institutional regulatory records (approval status, renewal date, stay flag).
+    Mandatory administrative reason note is required and recorded in the hash-chained audit trail.
+    """
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin role required to modify institutional regulatory record")
+    if not req.reason_note or len(req.reason_note.strip()) < 5:
+        raise HTTPException(status_code=400, detail="Mandatory administrative reason note required for audit logging (min 5 characters)")
+
+    inst = db.query(Institution).filter(Institution.id == institution_id).first()
+    if not inst:
+        raise HTTPException(status_code=404, detail="Institution not found")
+
+    old_state = {
+        "approval_status": inst.approval_status,
+        "renewal_date": inst.renewal_date,
+        "court_stay_flag": inst.court_stay_flag
+    }
+
+    inst.approval_status = req.approval_status
+    if req.renewal_date:
+        inst.renewal_date = req.renewal_date
+    inst.court_stay_flag = req.court_stay_flag
+    db.commit()
+
+    # Log to tamper-evident cryptographic audit trail
+    last_log = db.query(AuditLog).order_by(AuditLog.id.desc()).first()
+    prev_h = last_log.current_hash if last_log else "0" * 64
+    ts = datetime.utcnow()
+    dt_str = json.dumps({
+        "old_state": old_state,
+        "new_state": {
+            "approval_status": inst.approval_status,
+            "renewal_date": inst.renewal_date,
+            "court_stay_flag": inst.court_stay_flag
+        },
+        "reason_note": req.reason_note
+    }, sort_keys=True)
+    raw = f"{prev_h}|{ts.isoformat()}|{current_user.name}|ADMIN_EDIT_INSTITUTION|Institution|{inst.id}|{dt_str}"
+    ch = hashlib.sha256(raw.encode('utf-8')).hexdigest()
+    db.add(AuditLog(
+        prev_hash=prev_h, current_hash=ch, user_name=current_user.name,
+        action="ADMIN_EDIT_INSTITUTION", entity_type="Institution", entity_id=inst.id,
+        details_json=dt_str, timestamp=ts
+    ))
+    db.commit()
+
+    return {
+        "success": True,
+        "institution_id": inst.id,
+        "message": "Institutional regulatory standing successfully updated and logged to audit trail."
+    }
+

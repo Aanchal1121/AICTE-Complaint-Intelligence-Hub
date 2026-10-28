@@ -52,30 +52,38 @@ flowchart TD
 
 ### 4.1 Frontend
 - One login page with three tabs: **Student**, **Official**, and **Admin/Leadership**.
-- Role-specific home screens after login.
-- Shared header with language switcher, light/dark mode, notification centre and accessibility controls.
-- Student portal: file complaint, voice assistance, evidence capture/OCR, status timeline and closure feedback.
-- Official workspace: inbox, case details, AI triage trace, summary verification, actions, referrals and SLA tracker.
-- Institution 360: institution identity, approval/renewal details, risk factors, complaint history and conflict alerts.
-- Analysis Studio and Connected Case Network for permitted roles.
-- Frontend route guards improve navigation, but are not the security boundary; backend checks remain mandatory.
+- Role-specific home screens after login:
+  - **Student Complainant Portal (`/student`)**:
+    - **Tab 1: File Grievance**: Multimodal input (speech dictation, camera OCR, fuzzy institution search), live AI triage preview, and **30-day anti-duplicate filing rule** (preventing refiling of active complaints for the same college + category).
+    - **Tab 2: My Grievances & Tracking**: Detailed custody trail, statutory Citizen Charter deadline progress meter, and post-closure feedback.
+    - **Tab 3: AICTE Resolution Timeline & Progress**: Authentic AICTE-wide complaint resolution performance metrics (on-time vs delayed, pending on-track vs overdue, average turnaround time, multi-segment lifecycle progress indicator, year-wise comparative chart, prescribed category timelines distinguishing statutory mandates from service standards, and disclosed metadata).
+    - **Tab 4: AICTE College Record Explorer**: Searchable registry of AICTE-approved technical colleges, permanent institute IDs, Extension of Approval (EoA) status, approved programs, and mandatory statutory committee compliance (ICC, Anti-Ragging, SGRC).
+  - **Official Workspace (`/official`)**:
+    - Role-based Case Officer and Bureau Head inbox, live AI classification runner, duplicate tester, cross-dept alerts, deadline tracker, college risk score, and root cause hub.
+  - **Admin / Leadership Module (`/admin`)**:
+    - Left sidebar: **Dashboard, Insights, Network, Institutions, Escalations, Reports, Settings**.
+    - Top bar: Global natural-language search with Web Speech voice input, multilingual selector, theme toggle, and notification bell.
+    - **Section 1: Dashboard (`/admin`)**: Clickable KPI cards with MoM trends, interactive state heatmap (volume/overdue/risk toggle), 12-month pendency bar chart, top 10 risky institutions with explainable factor breakdown modal, 6 bureaus performance panel with "Backlog Growing" badge, system SLA circular gauge, and unified filter bar.
+    - **Section 2: Insights (`/admin/insights`)**: Root-cause insight dashboard with executive AI insight strip, period comparisons, recurring process failure ranking, topic cluster treemap, and 6 evidence-backed insight cards with review and assign-to-bureau-head controls and supporting complaint drawer.
+    - **Section 3: Network (`/network`)**: Full-screen Connected Case Network with pattern highlight filters.
+    - **Section 4: Institutions (`/institutions`)**: Searchable/sortable institution table, 2-to-3 college radar comparison matrix, Institution 360 dossier, and Admin Regulatory Status Override modal with audit logging.
+    - **Section 5: Escalations & Conflicts (`/admin/escalations`)**: Chairman-level escalation queue with custody history, direction note / reassignment / due date extension / resolve actions, and cross-bureau conflict alert queue with mandatory resolution notes.
+    - **Section 6: Reports (`/analytics`)**: Visual Analytics Studio and report library with CSV, Excel, and PDF exports logged to the audit log.
+    - **Section 7: Settings (`/settings`)**: Multi-tab control center covering Users (RBAC validation), Rules & SLA thresholds, Category Routing Map, AI Oversight with precision metrics, CSV Ingestion with fuzzy match preview, and SHA-256 Hash-Chained Audit Trail with verification, tamper simulation, and restore tools.
 
 ### 4.2 Backend
 FastAPI is organized into routers, schemas, models and service modules. API handlers validate input and call services; services enforce permissions and business rules before reading or changing records.
 
-Suggested API groups:
+Endpoints:
 - `/api/auth/*` — login, demo mode, mock OTP and current user.
-- `/api/institutions/*` — institution search and Institution 360.
-- `/api/complaints/*` — submission, list, details, status and tracking.
-- `/api/triage/*` — triage trace and officer overrides.
-- `/api/cases/*` — case groups, related cases and conflict checks.
-- `/api/actions/*` — action notes, templates and status transitions.
-- `/api/referrals/*` — inter-Bureau requests and responses.
-- `/api/reports/*` — filters, report data and authorized exports.
-- `/api/network/*` — graph nodes, edges and pattern callouts.
-- `/api/insights/*` — root-cause insight cards and evidence links.
-- `/api/notifications/*` — notifications and mock delivery log.
-- `/api/admin/*` — users, SLA/conflict rules and audit verification.
+- `/api/institutions/*` — institution search, Institution 360, and `PUT /api/institutions/{id}/admin-edit`.
+- `/api/complaints/*` — submission with 30-day anti-duplicate validation, list, details, status, and tracking.
+- `/api/analytics/resolution-timeline` — authentic statistical aggregator computing AICTE-wide on-time vs delayed resolution, category statutory timelines, multi-year trends, and metadata disclosures.
+- `/api/settings/escalations/*` — Chairman-level escalation queue and actions (reassign, direction_note, extend_due_date, resolve).
+- `/api/settings/conflicts/*` — cross-bureau conflict alerts and resolution with mandatory notes.
+- `/api/settings/ai-oversight` — computed acceptance rates and override records.
+- `/api/settings/import-csv` — fuzzy matching institution preview and bulk commit.
+- `/api/settings/audit/*` — audit log query, cryptographic hash-chain verification, tamper simulation, and restore.
 
 ### 4.3 AIService
 Every AI-dependent workflow calls a common interface, so the default offline implementation can be replaced without changing application routes.

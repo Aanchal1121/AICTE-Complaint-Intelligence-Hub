@@ -180,10 +180,7 @@ export const OfficialWorkspace: React.FC = () => {
     if (!testText.trim()) return;
     setTestLoading(true);
     try {
-      const res = await api.checkDuplicate({
-        text: testText.trim(),
-        institution_id: caseDetail?.institution_id
-      });
+      const res = await api.testClassifier(testText.trim());
       setTestResult(res);
     } catch (e) {
       console.error(e);
@@ -592,150 +589,48 @@ export const OfficialWorkspace: React.FC = () => {
           {caseDetail ? (
             <>
               {isDedicatedFeature ? (
-                /* Dedicated Module Top Header & Switcher (Opens each feature separately) */
-                <div className="space-y-4">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
-                    <div className="flex items-center gap-3">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSearchParams({});
-                          setActiveDetailTab('summary');
-                        }}
-                        className="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center gap-1.5 transition-all shadow-sm"
-                      >
-                        <ArrowLeft className="w-4 h-4" />
-                        <span>← Back to Official Workspace</span>
-                      </button>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-cyan-400">
-                            AI Intelligence Dedicated View
-                          </span>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-teal-100 dark:bg-teal-950 text-teal-800 dark:text-cyan-300 border border-teal-500/20">
-                            Active
-                          </span>
-                        </div>
-                        <h1 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">
-                          {activeDetailTab === 'classification' && 'AI Complaint Classification (Indic BERT & TF-IDF)'}
-                          {activeDetailTab === 'duplicates' && 'Duplicate Complaint Detection & Cosine Clustering'}
-                          {activeDetailTab === 'cross_dept' && 'Cross-Department Early Warning & Multi-Bureau Coordination'}
-                          {activeDetailTab === 'deadlines' && '30-Day Citizen\'s Charter SLA & Milestone Tracking'}
-                          {activeDetailTab === 'college_risk' && 'Institutional AICTE Risk & Regulatory Scrutiny Profile'}
-                          {activeDetailTab === 'root_cause' && 'National Root-Cause Diagnostic & Systemic Spike Intelligence'}
-                        </h1>
+                /* Dedicated Module Top Header */
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchParams({});
+                        setActiveDetailTab('summary');
+                      }}
+                      className="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center gap-1.5 transition-all shadow-sm"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                      <span>← Back to Official Workspace</span>
+                    </button>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-cyan-400">
+                          AI Intelligence Dedicated View
+                        </span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-teal-100 dark:bg-teal-950 text-teal-800 dark:text-cyan-300 border border-teal-500/20">
+                          Active
+                        </span>
                       </div>
+                      <h1 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">
+                        {activeDetailTab === 'classification' && 'AI Complaint Classification (Indic BERT & TF-IDF)'}
+                        {activeDetailTab === 'duplicates' && 'Duplicate Complaint Detection & Cosine Clustering'}
+                        {activeDetailTab === 'cross_dept' && 'Cross-Department Early Warning & Multi-Bureau Coordination'}
+                        {activeDetailTab === 'deadlines' && '30-Day Citizen\'s Charter SLA & Milestone Tracking'}
+                        {activeDetailTab === 'college_risk' && 'Institutional AICTE Risk & Regulatory Scrutiny Profile'}
+                        {activeDetailTab === 'root_cause' && 'National Root-Cause Diagnostic & Systemic Spike Intelligence'}
+                      </h1>
                     </div>
-
-                    {caseDetail && (
-                      <div className="flex items-center gap-2 text-xs text-slate-500 bg-slate-50 dark:bg-slate-800/60 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
-                        <span className="font-semibold text-slate-400">Context Case:</span>
-                        <span className="font-mono font-bold text-teal-700 dark:text-cyan-400">{caseDetail.id}</span>
-                        <span>•</span>
-                        <span className="truncate max-w-[200px] font-medium text-slate-700 dark:text-slate-300">{caseDetail.institution_name || caseDetail.institution?.name}</span>
-                      </div>
-                    )}
                   </div>
 
-                  {/* Horizontal Module Switcher (The 6 Features) */}
-                  <div className="flex items-center gap-2 overflow-x-auto text-xs font-semibold pb-2 border-b border-slate-200 dark:border-slate-800">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setActiveDetailTab('classification');
-                        setSearchParams({ feature: 'classification' });
-                      }}
-                      className={`px-3.5 py-2 rounded-xl flex items-center gap-1.5 shrink-0 transition-all ${
-                        activeDetailTab === 'classification'
-                          ? 'bg-teal-600 text-white font-bold shadow-md'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                      }`}
-                    >
-                      <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                      <span>1. AI Classification</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setActiveDetailTab('duplicates');
-                        setSearchParams({ feature: 'duplicates' });
-                      }}
-                      className={`px-3.5 py-2 rounded-xl flex items-center gap-1.5 shrink-0 transition-all ${
-                        activeDetailTab === 'duplicates'
-                          ? 'bg-amber-600 text-white font-bold shadow-md'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                      }`}
-                    >
-                      <Copy className="w-3.5 h-3.5" />
-                      <span>2. Duplicate Detection</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setActiveDetailTab('cross_dept');
-                        setSearchParams({ feature: 'cross_dept' });
-                      }}
-                      className={`px-3.5 py-2 rounded-xl flex items-center gap-1.5 shrink-0 transition-all ${
-                        activeDetailTab === 'cross_dept'
-                          ? 'bg-red-600 text-white font-bold shadow-md'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                      }`}
-                    >
-                      <AlertTriangle className="w-3.5 h-3.5" />
-                      <span>3. Cross-Dept Alert</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setActiveDetailTab('deadlines');
-                        setSearchParams({ feature: 'deadlines' });
-                      }}
-                      className={`px-3.5 py-2 rounded-xl flex items-center gap-1.5 shrink-0 transition-all ${
-                        activeDetailTab === 'deadlines'
-                          ? 'bg-purple-600 text-white font-bold shadow-md'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                      }`}
-                    >
-                      <Clock className="w-3.5 h-3.5" />
-                      <span>4. Deadline Tracking</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setActiveDetailTab('college_risk');
-                        setSearchParams({ feature: 'college_risk' });
-                      }}
-                      className={`px-3.5 py-2 rounded-xl flex items-center gap-1.5 shrink-0 transition-all ${
-                        activeDetailTab === 'college_risk'
-                          ? 'bg-orange-600 text-white font-bold shadow-md'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                      }`}
-                    >
-                      <Shield className="w-3.5 h-3.5" />
-                      <span>5. College Risk Score</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setActiveDetailTab('root_cause');
-                        loadRootCauseInsight();
-                        setSearchParams({ feature: 'root_cause' });
-                      }}
-                      className={`px-3.5 py-2 rounded-xl flex items-center gap-1.5 shrink-0 transition-all ${
-                        activeDetailTab === 'root_cause'
-                          ? 'bg-indigo-600 text-white font-bold shadow-md'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                      }`}
-                    >
-                      <TrendingUp className="w-3.5 h-3.5" />
-                      <span>6. Root Cause Hub</span>
-                    </button>
-                  </div>
+                  {caseDetail && (
+                    <div className="flex items-center gap-2 text-xs text-slate-500 bg-slate-50 dark:bg-slate-800/60 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
+                      <span className="font-semibold text-slate-400">Context Case:</span>
+                      <span className="font-mono font-bold text-teal-700 dark:text-cyan-400">{caseDetail.id}</span>
+                      <span>•</span>
+                      <span className="truncate max-w-[200px] font-medium text-slate-700 dark:text-slate-300">{caseDetail.institution_name || caseDetail.institution?.name}</span>
+                    </div>
+                  )}
                 </div>
               ) : (
                 /* Standard Workspace Case Dossier Header */
@@ -981,29 +876,61 @@ export const OfficialWorkspace: React.FC = () => {
                       </form>
 
                       {testResult && (
-                        <div className="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-xs space-y-1.5 border border-slate-300 dark:border-slate-700 animate-fade-in">
-                          <div className="font-bold text-teal-700 dark:text-cyan-400">
-                            Test Determination:
+                        testResult.is_valid_grievance === false ? (
+                          <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-xs space-y-1 border border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-200 animate-fade-in">
+                            <div className="font-bold flex items-center gap-1.5 text-amber-800 dark:text-amber-300">
+                              <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                              <span>Classification Result: Unclassified / Insufficient Details</span>
+                            </div>
+                            <p className="text-[11px] text-amber-700 dark:text-amber-300/90 leading-relaxed">
+                              {testResult.message || "The AI engine could not identify a recognized AICTE grievance category. Please provide specific grievance details (e.g. fee refund, ghost faculty, ragging, broken equipment, exam delay)."}
+                            </p>
                           </div>
-                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
-                            <div>
-                              <span className="text-slate-500">Category: </span>
-                              <span className="font-bold capitalize text-slate-800 dark:text-white">{testResult.predicted_category}</span>
+                        ) : (
+                          <div className="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-xs space-y-2 border border-slate-300 dark:border-slate-700 animate-fade-in">
+                            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-1.5">
+                              <div className="font-bold text-teal-700 dark:text-cyan-400 flex items-center gap-1.5">
+                                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                                <span>AI Test Determination (TF-IDF + Rules)</span>
+                              </div>
+                              <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-teal-100 dark:bg-teal-950 text-teal-800 dark:text-teal-300 border border-teal-500/30">
+                                {Math.round((testResult.category_confidence || 0.95) * 100)}% Confidence
+                              </span>
                             </div>
-                            <div>
-                              <span className="text-slate-500">Bureau: </span>
-                              <span className="font-bold text-slate-800 dark:text-white">{testResult.routed_bureau}</span>
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
+                              <div>
+                                <span className="text-slate-500 block text-[10px]">Predicted Category: </span>
+                                <span className="font-bold capitalize text-slate-800 dark:text-white">{testResult.predicted_category}</span>
+                              </div>
+                              <div>
+                                <span className="text-slate-500 block text-[10px]">Routed Bureau: </span>
+                                <span className="font-bold text-slate-800 dark:text-white">{testResult.routed_bureau}</span>
+                              </div>
+                              <div>
+                                <span className="text-slate-500 block text-[10px]">Assessed Priority: </span>
+                                <span className={`font-bold ${
+                                  testResult.priority === 'Critical' ? 'text-rose-500' :
+                                  testResult.priority === 'High' ? 'text-amber-500' :
+                                  'text-emerald-500'
+                                }`}>{testResult.priority}</span>
+                              </div>
+                              <div>
+                                <span className="text-slate-500 block text-[10px]">Prescribed SLA: </span>
+                                <span className="font-bold text-emerald-500">{testResult.sla_days} Days</span>
+                              </div>
                             </div>
-                            <div>
-                              <span className="text-slate-500">Priority: </span>
-                              <span className="font-bold text-amber-500">{testResult.priority}</span>
-                            </div>
-                            <div>
-                              <span className="text-slate-500">SLA: </span>
-                              <span className="font-bold text-emerald-500">{testResult.sla_days} Days</span>
-                            </div>
+                            {(testResult.process_stage || testResult.detected_language) && (
+                              <div className="flex flex-wrap items-center gap-3 pt-1.5 border-t border-slate-200 dark:border-slate-700/60 text-[10px] text-slate-500">
+                                {testResult.process_stage && (
+                                  <span>Failing Stage: <strong className="text-slate-700 dark:text-slate-300 capitalize">{testResult.process_stage}</strong></span>
+                                )}
+                                {testResult.detected_language && (
+                                  <span>Detected Language: <strong className="text-slate-700 dark:text-slate-300">{testResult.detected_language}</strong></span>
+                                )}
+                              </div>
+                            )}
                           </div>
-                        </div>
+                        )
                       )}
                     </div>
 

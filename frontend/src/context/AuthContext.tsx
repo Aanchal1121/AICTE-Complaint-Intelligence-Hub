@@ -44,6 +44,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const quickLoginAs = async (demoUser: any) => {
     let payload: any = { role: demoUser.role };
     if (demoUser.role === 'student') {
+      payload.enrollment_no = demoUser.enrollment_no || 'EN2023CS0481';
+      payload.password = demoUser.password || 'StudentPass@123';
       payload.phone = demoUser.phone;
       payload.otp = demoUser.otp || '123456';
     } else {

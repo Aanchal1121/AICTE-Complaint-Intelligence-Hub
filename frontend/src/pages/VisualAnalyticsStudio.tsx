@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactECharts from 'echarts-for-react';
+import { useTranslation } from 'react-i18next';
 import { api } from '../api';
 import { useTheme } from '../context/ThemeContext';
 import {
@@ -9,6 +10,7 @@ import {
 } from 'lucide-react';
 
 export const VisualAnalyticsStudio: React.FC = () => {
+  const { t } = useTranslation();
   const { isDark } = useTheme();
 
   // Filters
@@ -37,41 +39,49 @@ export const VisualAnalyticsStudio: React.FC = () => {
   const [aiInsights, setAiInsights] = useState<any[]>([]);
   const [topRisky, setTopRisky] = useState<any[]>([]);
 
+  const [isExporting, setIsExporting] = useState<string | null>(null);
+
   useEffect(() => {
     loadAllAnalytics();
   }, [bureauFilter, categoryFilter, stateFilter]);
 
   const loadAllAnalytics = async () => {
     try {
+      const filterParams = {
+        bureau: bureauFilter,
+        category: categoryFilter,
+        state: stateFilter
+      };
+
       const [ov, sk, hm, ch, tr, tm, rd, bb, bw, fn, ai, rk] = await Promise.all([
-        api.getAnalyticsOverview({ bureau: bureauFilter, category: categoryFilter, state: stateFilter }),
-        api.getSankey(),
-        api.getHeatmap(),
-        api.getChoropleth(),
-        api.getTrends(),
-        api.getTreemap(),
-        api.getRadar(),
-        api.getBubble(),
-        api.getBureauWorkload(),
-        api.getFunnel(),
-        api.getAiInsights(),
-        api.getTopRisky()
+        api.getAnalyticsOverview(filterParams),
+        api.getSankey(filterParams),
+        api.getHeatmap(filterParams),
+        api.getChoropleth(filterParams),
+        api.getTrends(filterParams),
+        api.getTreemap(filterParams),
+        api.getRadar(undefined, filterParams),
+        api.getBubble(filterParams),
+        api.getBureauWorkload(filterParams),
+        api.getFunnel(filterParams),
+        api.getAiInsights(filterParams),
+        api.getTopRisky(filterParams)
       ]);
 
       setOverview(ov);
       setSankeyData(sk);
       setHeatmapData(hm);
-      setChoroplethData(ch.states || []);
+      setChoroplethData(ch?.states || []);
       setTrendsData(tr);
-      setTreemapData(tm.data || []);
+      setTreemapData(tm?.data || []);
       setRadarData(rd);
-      setBubbleData(bb.points || []);
-      setBureauData(bw.bureaus || []);
-      setFunnelData(fn.stages || []);
-      setAiInsights(ai.insights || []);
-      setTopRisky(rk.leaderboard || []);
+      setBubbleData(bb?.points || []);
+      setBureauData(bw?.bureaus || []);
+      setFunnelData(fn?.stages || []);
+      setAiInsights(ai?.insights || []);
+      setTopRisky(rk?.leaderboard || []);
     } catch (err) {
-      console.error(err);
+      console.error("Failed to load analytics:", err);
     }
   };
 
@@ -90,14 +100,30 @@ export const VisualAnalyticsStudio: React.FC = () => {
   }, [presentationMode, isPlaying]);
 
   // Export handlers
-  const handleExport = (format: string) => {
-    const url = api.getExportUrl(format, { bureau: bureauFilter, category: categoryFilter, state: stateFilter });
-    window.open(url, '_blank');
+  const handleExport = async (format: string) => {
+    try {
+      setIsExporting(format);
+      await api.downloadExport(format, {
+        bureau: bureauFilter,
+        category: categoryFilter,
+        state: stateFilter
+      });
+    } catch (err) {
+      console.error("Direct download failed, falling back to window.open:", err);
+      const url = api.getExportUrl(format, {
+        bureau: bureauFilter,
+        category: categoryFilter,
+        state: stateFilter
+      });
+      window.open(url, '_blank');
+    } finally {
+      setIsExporting(null);
+    }
   };
 
   // 1. Sankey Option
   const getSankeyOption = () => {
-    if (!sankeyData) return {};
+    if (!sankeyData || !sankeyData.nodes || sankeyData.nodes.length === 0) return {};
     return {
       tooltip: { trigger: 'item', triggerOn: 'mousemove' },
       series: [{
@@ -105,7 +131,7 @@ export const VisualAnalyticsStudio: React.FC = () => {
         layout: 'none',
         emphasis: { focus: 'adjacency' },
         data: sankeyData.nodes,
-        links: sankeyData.links,
+        links: sankeyData.links || [],
         lineStyle: { color: 'gradient', curveness: 0.5 },
         label: { color: isDark ? '#f8fafc' : '#0f172a', fontSize: 10 }
       }]
@@ -141,19 +167,20 @@ export const VisualAnalyticsStudio: React.FC = () => {
       series: [{
         type: 'heatmap',
         coordinateSystem: 'calendar',
-        data: heatmapData.series
+        data: heatmapData.series || []
       }]
     };
   };
 
   // 3. Stacked Area Trends + SLA Breach Line
   const getTrendsOption = () => {
-    if (!trendsData) return {};
+    if (!trendsData || !trendsData.months || trendsData.months.length === 0) return {};
     const colors = ['#0e7490', '#06b6d4', '#14b8a6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#64748b'];
+    const cats = trendsData.categories || [];
     return {
       tooltip: { trigger: 'axis' },
       legend: {
-        data: [...trendsData.categories, 'SLA Breach Rate (%)'],
+        data: [...cats, 'SLA Breach Rate (%)'],
         textStyle: { color: isDark ? '#94a3b8' : '#64748b', fontSize: 10 },
         bottom: 0
       },
@@ -167,20 +194,20 @@ export const VisualAnalyticsStudio: React.FC = () => {
         { type: 'value', name: 'Breach %', max: 100, axisLabel: { color: '#ef4444' } }
       ],
       series: [
-        ...trendsData.categories.map((cat: string, idx: number) => ({
+        ...cats.map((cat: string, idx: number) => ({
           name: cat,
           type: 'line',
           stack: 'Total',
           areaStyle: { opacity: 0.55 },
           emphasis: { focus: 'series' },
           color: colors[idx % colors.length],
-          data: trendsData.series[cat]
+          data: (trendsData.series && trendsData.series[cat]) || []
         })),
         {
           name: 'SLA Breach Rate (%)',
           type: 'line',
           yAxisIndex: 1,
-          data: trendsData.breach_rates,
+          data: trendsData.breach_rates || [],
           lineStyle: { width: 3, color: '#ef4444', type: 'dashed' },
           itemStyle: { color: '#ef4444' }
         }
@@ -192,7 +219,7 @@ export const VisualAnalyticsStudio: React.FC = () => {
   const getTreemapOption = () => {
     return {
       tooltip: {
-        formatter: (info: any) => `${info.name}: ${info.value} complaints (Growth: ${info.data.growth}%)`
+        formatter: (info: any) => `${info.name}: ${info.value} complaints (Growth: ${info.data?.growth || 0}%)`
       },
       series: [{
         type: 'treemap',
@@ -205,7 +232,7 @@ export const VisualAnalyticsStudio: React.FC = () => {
 
   // 5. Radar Chart Option
   const getRadarOption = () => {
-    if (!radarData) return {};
+    if (!radarData || !radarData.indicators || radarData.indicators.length === 0) return {};
     return {
       tooltip: {},
       legend: {
@@ -220,7 +247,7 @@ export const VisualAnalyticsStudio: React.FC = () => {
       },
       series: [{
         type: 'radar',
-        data: radarData.series.map((s: any, idx: number) => ({
+        data: (radarData.series || []).map((s: any) => ({
           name: s.name,
           value: s.value,
           areaStyle: { opacity: 0.25 },
@@ -261,13 +288,13 @@ export const VisualAnalyticsStudio: React.FC = () => {
         <div>
           <div className="flex items-center space-x-2 text-teal-600 dark:text-cyan-400 text-xs font-bold uppercase tracking-wider">
             <BarChart3 className="w-4 h-4" />
-            <span>AICTE Report Analysis Visualisation Studio</span>
+            <span>{t('analytics.badge', 'AICTE Report Analysis Visualisation Studio')}</span>
           </div>
           <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mt-1">
-            National Executive Intelligence & Visual Studio
+            {t('analytics.title', 'National Executive Intelligence & Visual Studio')}
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            12 integrated interactive analytical visualizers with cross-chart filtering, presentation cycle, and audit exports.
+            {t('analytics.subtitle', '12 integrated interactive analytical visualizers with cross-chart filtering, presentation cycle, and audit exports.')}
           </p>
         </div>
 
@@ -285,22 +312,24 @@ export const VisualAnalyticsStudio: React.FC = () => {
             }`}
           >
             {presentationMode ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-            <span>{presentationMode ? "Exit Presentation" : "Presentation Mode"}</span>
+            <span>{presentationMode ? t('analytics.exitPresentation', "Exit Presentation") : t('analytics.presentationMode', "Presentation Mode")}</span>
           </button>
 
           <button
             onClick={() => handleExport('pdf')}
-            className="px-3 py-2 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-700 text-white flex items-center gap-1.5 shadow-md transition-colors"
+            disabled={isExporting !== null}
+            className="px-3 py-2 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-700 disabled:opacity-60 text-white flex items-center gap-1.5 shadow-md transition-colors"
           >
             <Download className="w-3.5 h-3.5" />
-            <span>Export PDF</span>
+            <span>{isExporting === 'pdf' ? 'Exporting...' : t('analytics.exportPdf', 'Export PDF')}</span>
           </button>
 
           <button
             onClick={() => handleExport('csv')}
-            className="px-3 py-2 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center gap-1.5"
+            disabled={isExporting !== null}
+            className="px-3 py-2 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 disabled:opacity-60 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center gap-1.5"
           >
-            <span>Export CSV</span>
+            <span>{isExporting === 'csv' ? 'Exporting...' : t('analytics.exportCsv', 'Export CSV')}</span>
           </button>
         </div>
       </div>
@@ -309,7 +338,7 @@ export const VisualAnalyticsStudio: React.FC = () => {
       <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex flex-wrap items-center gap-3 text-xs">
         <div className="flex items-center gap-1 text-slate-500 font-semibold">
           <Filter className="w-3.5 h-3.5" />
-          <span>Sync Filters:</span>
+          <span>{t('analytics.syncFilters', 'Sync Filters:')}</span>
         </div>
 
         <select
@@ -317,7 +346,7 @@ export const VisualAnalyticsStudio: React.FC = () => {
           onChange={e => setBureauFilter(e.target.value)}
           className="p-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs"
         >
-          <option value="">All Bureaus</option>
+          <option value="">{t('analytics.allBureaus', 'All Bureaus')}</option>
           <option value="Finance">Finance Bureau</option>
           <option value="Approval">Approval Bureau</option>
           <option value="Academic">Academic Bureau</option>
@@ -330,7 +359,7 @@ export const VisualAnalyticsStudio: React.FC = () => {
           onChange={e => setCategoryFilter(e.target.value)}
           className="p-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs"
         >
-          <option value="">All Categories</option>
+          <option value="">{t('analytics.allCategories', 'All Categories')}</option>
           <option value="fee fraud">Fee Fraud</option>
           <option value="fake faculty">Fake Faculty</option>
           <option value="harassment/ragging">Harassment / Ragging</option>
@@ -343,7 +372,7 @@ export const VisualAnalyticsStudio: React.FC = () => {
           onChange={e => setStateFilter(e.target.value)}
           className="p-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs"
         >
-          <option value="">All States</option>
+          <option value="">{t('analytics.allStates', 'All States')}</option>
           <option value="Madhya Pradesh">Madhya Pradesh</option>
           <option value="Maharashtra">Maharashtra</option>
           <option value="Karnataka">Karnataka</option>
@@ -357,7 +386,7 @@ export const VisualAnalyticsStudio: React.FC = () => {
             onClick={() => { setBureauFilter(''); setCategoryFilter(''); setStateFilter(''); }}
             className="text-xs text-red-500 hover:underline font-semibold ml-auto"
           >
-            Reset Filters
+            {t('analytics.resetFilters', 'Reset Filters')}
           </button>
         )}
       </div>
@@ -367,7 +396,7 @@ export const VisualAnalyticsStudio: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md">
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
-              Total Monitored Grievances
+              {t('analytics.totalMonitored', 'Total Monitored Grievances')}
             </span>
             <div className="flex items-baseline justify-between mt-2">
               <span className="text-3xl font-extrabold text-slate-900 dark:text-white">
@@ -383,7 +412,7 @@ export const VisualAnalyticsStudio: React.FC = () => {
 
           <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md">
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
-              SLA Compliance Rate
+              {t('analytics.slaCompliance', 'SLA Compliance Rate')}
             </span>
             <div className="flex items-baseline justify-between mt-2">
               <span className="text-3xl font-extrabold text-teal-600 dark:text-cyan-400">
@@ -396,7 +425,7 @@ export const VisualAnalyticsStudio: React.FC = () => {
 
           <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md">
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
-              Active Bureau Backlog
+              {t('analytics.activeBacklog', 'Active Bureau Backlog')}
             </span>
             <div className="flex items-baseline justify-between mt-2">
               <span className="text-3xl font-extrabold text-amber-500">
@@ -412,7 +441,7 @@ export const VisualAnalyticsStudio: React.FC = () => {
 
           <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md">
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
-              Average Resolution Turnaround
+              {t('analytics.avgTurnaround', 'Average Resolution Turnaround')}
             </span>
             <div className="flex items-baseline justify-between mt-2">
               <span className="text-3xl font-extrabold text-emerald-500">
@@ -432,7 +461,7 @@ export const VisualAnalyticsStudio: React.FC = () => {
       <div className="space-y-3">
         <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
           <Sparkles className="w-4 h-4 text-amber-500" />
-          AI Synthesis Strip: Plain-Language Findings (Evidence-Linked)
+          {t('analytics.aiSynthesis', 'AI Synthesis Strip: Plain-Language Findings (Evidence-Linked)')}
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

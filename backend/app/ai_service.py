@@ -20,9 +20,10 @@ TRANSLATION_DICT = {
     # Hindi
     "फीस": "fees", "वापस": "refund", "कॉलेज": "college", "संस्थान": "institution", "शिकायत": "complaint",
     "छात्र": "student", "रिफंड": "refund", "धोखाधड़ी": "fraud", "अध्यापक": "faculty", "शिक्षकों": "faculty",
-    "परीक्षा": "examination", "प्रवेश": "admission", "रैगिंग": "ragging", "अनुमोदन": "approval",
+    "शिक्षक": "teacher", "परीक्षा": "examination", "प्रवेश": "admission", "रैगिंग": "ragging", "अनुमोदन": "approval",
     "सुविधा": "facility", "रुपये": "rupees", "जमा": "deposit", "दस्तावेज": "documents", "प्रमाणपत्र": "certificates",
     "लैब": "laboratory", "हॉस्टल": "hostel", "धमकी": "threat", "मान्यता": "affiliation/approval",
+    "अवैध": "illegal", "रिश्वत": "bribe", "मार्कशीट": "marksheet", "रिजल्ट": "results", "डिग्री": "degree",
     # Marathi
     "महाविद्यालय": "college", "संस्था": "institution", "तक्रार": "complaint", "विद्यार्थी": "student",
     "परतावा": "refund", "फसवणूक": "fraud", "प्राध्यापक": "faculty",
@@ -36,37 +37,99 @@ TRANSLATION_DICT = {
 
 CATEGORY_KEYWORDS = {
     "fee fraud": [
-        "fee", "fees", "refund", "withhold", "caution money", "capitation", "extortion", "excess fee",
-        "tuition", "refunded", "receipt", "fine", "penalty fee", "money back", "development fee", "overcharged",
-        "फीस", "रिफंड", "वापस", "पैसे"
+        "fee", "fees", "refund", "refunding", "refunded", "withhold", "withheld", "caution money",
+        "capitation", "extortion", "excess fee", "tuition", "receipt", "fine", "penalty",
+        "money back", "development fee", "overcharged", "security deposit", "dues", "scholarship",
+        "फीस", "रिफंड", "वापस", "पैसे", "रुपये", "अनामत", "शुल्क", "काशन मनी"
     ],
     "fake faculty": [
-        "faculty", "teacher", "professor", "fake faculty", "ghost faculty", "unqualified", "phd fake",
-        "staff", "absent teacher", "salary not paid", "visiting", "ad-hoc", "lecturer", "अध्यापक", "शिक्षक"
+        "faculty", "teacher", "teachers", "professor", "professors", "fake faculty", "ghost faculty",
+        "unqualified", "phd", "staff", "absent", "biometric", "salary", "unpaid", "visiting",
+        "ad-hoc", "lecturer", "lecturers", "teaching", "classes", "अध्यापक", "शिक्षक", "बायोमेट्रिक", "वेतन"
     ],
     "harassment/ragging": [
-        "ragging", "harassment", "bully", "abuse", "threat", "caste", "mental torture", "violence",
-        "assault", "senior", "hostel ragging", "anti-ragging", "suicide threat", "depression", "रैगिंग", "उत्पीड़न"
+        "ragging", "harassment", "bully", "bullying", "abuse", "threat", "threatened", "caste",
+        "mental torture", "violence", "assault", "senior", "seniors", "dormitory", "anti-ragging",
+        "suicide", "depression", "marpit", "रैगिंग", "उत्पीड़न", "मारपीट", "सीनियर", "धमकी"
     ],
     "infrastructure": [
-        "infrastructure", "lab", "laboratory", "library", "hostel", "building", "fire safety", "broken equipment",
-        "no computers", "hygiene", "drinking water", "power outage", "sanitation", "washroom", "सुविधा", "प्रयोगशाला"
+        "infrastructure", "lab", "laboratory", "labs", "library", "hostel", "building", "fire safety",
+        "broken equipment", "computers", "hygiene", "drinking water", "power outage", "sanitation",
+        "washroom", "washrooms", "toilet", "toilets", "internet", "wifi", "सुविधा", "प्रयोगशाला", "लैब", "लाइब्रेरी", "हॉस्टल"
     ],
     "admission irregularity": [
-        "admission", "counselling", "seat selling", "management quota", "backdoor", "merit bypass",
-        "eligibility", "bribe for seat", "cutoff", "allotment", "प्रवेश", "काउंसिलिंग"
+        "admission", "admissions", "counselling", "seat", "seats", "seat selling", "management quota",
+        "backdoor", "merit bypass", "eligibility", "bribe", "donation", "cutoff", "allotment", "quota",
+        "प्रवेश", "काउंसिलिंग", "सीट", "रिश्वत", "डोनेशन", "मेरिट"
     ],
     "approval-related": [
         "approval", "aicte approval", "renewal", "affiliation", "fake approval", "unapproved course",
-        "bogus degrees", "intake violation", "seat excess", "recognition", "अनुमोदन", "मान्यता"
+        "bogus degrees", "intake violation", "seat excess", "recognition", "eoa", "extension of approval",
+        "accreditation", "unrecognized", "अनुमोदन", "मान्यता", "एआईसीटीई", "अवैध"
     ],
     "affiliation": [
-        "university affiliation", "disaffiliation", "unaffiliated", "syllabus change", "curriculum", "tie-up"
+        "university affiliation", "disaffiliation", "unaffiliated", "syllabus change", "curriculum",
+        "tie-up", "dispute", "autonomous", "संबद्धता", "विश्वविद्यालय", "यूनिवर्सिटी"
     ],
     "examination": [
-        "exam", "examination", "paper leak", "evaluation", "grace marks", "revaluation", "mass copying",
-        "admit card", "results delayed", "marksheet withheld", "degree certificate", "परीक्षा"
+        "exam", "exams", "examination", "paper leak", "evaluation", "grace marks", "revaluation",
+        "mass copying", "admit card", "results delayed", "marksheet", "degree certificate", "convocation",
+        "परीक्षा", "पेपर लीक", "रिजल्ट", "मार्कशीट", "डिग्री", "मूल्यांकन"
     ]
+}
+
+CATEGORY_CORPUS = {
+    "fee fraud": (
+        "fee fees refund refunding refunded withhold withholding caution money capitation extortion excess fee "
+        "tuition fee fine penalty money back development fee overcharged security deposit dues scholarship reimbursement "
+        "receipt demand draft college not refunding money cheated financial extortion "
+        "फीस रिफंड वापस पैसे रुपये अनामत शुल्क जमा रसीद पैसा वापसी जुर्माना काशन मनी अतिरिक्त शुल्क "
+        "fee wapas paise wapas refund nahi mila fees refund extra fees security deposit no dues"
+    ),
+    "fake faculty": (
+        "faculty teacher teachers professor professors fake faculty ghost faculty unqualified phd absent absence "
+        "attendance biometric attendance spoof salary unpaid salaries visiting ad-hoc lecturer lecturers teaching classes "
+        "qualification shortage proxy attendance fake teacher "
+        "अध्यापक शिक्षक प्राध्यापक शिक्षकों बायोमेट्रिक वेतन अनुपस्थित फर्जी शिक्षक फैकल्टी पढ़ाते नहीं हाजिरी "
+        "faculty absent teacher absent teachers nahi aate fake teacher biometric fake salary nahi di classes nahi lagti"
+    ),
+    "harassment/ragging": (
+        "ragging harassment bully bullying abuse abused threat threatened caste discrimination mental torture violence "
+        "assault assaulted senior seniors dormitory anti-ragging suicide depression humiliation molestation safety beaten beating "
+        "रैगिंग उत्पीड़न धमकी मारपीट सीनियर प्रताड़ना हिंसा अपमान गाली सुरक्षा डर प्रताड़ित "
+        "ragging ho rahi seniors mar rahe marpit dhamki de rahe ragging complaint bullying mental torture seniors pareshan"
+    ),
+    "infrastructure": (
+        "infrastructure lab laboratory laboratories library hostel building fire safety broken equipment computers hygiene "
+        "drinking water power outage sanitation washroom washrooms toilet toilets internet wifi water facilities campus "
+        "broken computers instruments toxic fumes no books "
+        "सुविधा प्रयोगशाला लैब लाइब्रेरी पुस्तकालय हॉस्टल शौचालय पानी बिजली सफाई कंप्यूटर टूटे उपकरण "
+        "lab kharab computer nahi hai drinking water ganda washroom dirty hostel me pani nahi lab band internet nahi"
+    ),
+    "admission irregularity": (
+        "admission admissions counselling seat seats seat selling management quota backdoor merit bypass eligibility bribe "
+        "donation cutoff allotment quota capitation fee rank reservation merit list bypassed cash donation "
+        "प्रवेश काउंसिलिंग सीट मेरिट रिश्वत डोनेशन कोटा कटऑफ दाखिला "
+        "seat bech rahe admission bribe donation mang rahe management quota backdoor admission counselling me seat"
+    ),
+    "approval-related": (
+        "approval aicte approval renewal affiliation fake approval unapproved course bogus degrees intake violation seat excess "
+        "recognition eoa extension of approval accreditation nba validity illegal college unrecognized expired approval "
+        "अनुमोदन मान्यता एआईसीटीई नवीनीकरण फर्जी कॉलेज अवैध मान्यता रद्द सीट संख्या "
+        "aicte approval nahi fake college unapproved course approval expired illegal course aicte affiliation fake"
+    ),
+    "affiliation": (
+        "university affiliation disaffiliation unaffiliated syllabus curriculum tie-up board university cancelled dispute "
+        "affiliating state university outdated curriculum "
+        "संबद्धता विश्वविद्यालय यूनिवर्सिटी पाठ्यक्रम "
+        "university affiliation disaffiliated syllabus purana"
+    ),
+    "examination": (
+        "exam exams examination paper leak evaluation grace marks revaluation mass copying admit card results delayed marksheet "
+        "degree certificate certificate withheld convocation hall ticket marksheet detained "
+        "परीक्षा पेपर लीक रिजल्ट डिग्री अंकतालिका मूल्यांकन एडमिट कार्ड मार्कशीट "
+        "paper leak result nahi aaya marksheet nahi di degree nahi mili admit card rok diya revaluation nahi ho raha"
+    )
 }
 
 BUREAU_MAPPING = {
@@ -100,41 +163,47 @@ SLA_POLICY = {
 
 class AIService:
     def __init__(self):
-        self.vectorizer = TfidfVectorizer(stop_words='english', max_features=1000)
-        self._fitted = False
+        self.categories_list = list(CATEGORY_CORPUS.keys())
+        self.category_docs = [CATEGORY_CORPUS[cat] for cat in self.categories_list]
+        self.tfidf_vectorizer = TfidfVectorizer(ngram_range=(1, 2), stop_words='english', sublinear_tf=True)
+        self.category_tfidf_matrix = self.tfidf_vectorizer.fit_transform(self.category_docs)
+        self.vectorizer = self.tfidf_vectorizer
 
     def detect_language(self, text: str) -> Tuple[str, float]:
-        """Detect language among en, hi, mr, bn, ta, te with confidence."""
-        text_lower = text.lower()
-        scores = {"en": 0.5}  # default prior
+        """Detect language among en, hi, mr, bn, ta, te using script and keyword analysis."""
+        if not text:
+            return "en", 0.90
         
-        for lang, kws in LANG_KEYWORDS.items():
-            match_count = sum(1 for kw in kws if kw in text)
-            if match_count > 0:
-                scores[lang] = match_count * 1.5
-
-        detected_lang = max(scores, key=scores.get)
-        confidence = min(0.98, max(0.65, scores[detected_lang] / (sum(scores.values()) + 0.001)))
-        return detected_lang, round(confidence, 2)
+        # Unicode script detection
+        if re.search(r'[\u0900-\u097F]', text):
+            if any(w in text for w in ["आहे", "नाही", "तक्रार", "विद्यार्थी", "परतावा"]):
+                return "mr", 0.92
+            return "hi", 0.96
+        if re.search(r'[\u0B80-\u0BFF]', text):
+            return "ta", 0.98
+        if re.search(r'[\u0C00-\u0C7F]', text):
+            return "te", 0.98
+        if re.search(r'[\u0980-\u09FF]', text):
+            return "bn", 0.98
+            
+        return "en", 0.92
 
     def translate(self, text: str, source_lang: str) -> str:
-        """Translate text to English using offline dictionary + semantic glossing."""
+        """Translate text to English using glossary while preserving Indic unicode characters."""
         if source_lang == "en":
             return text
         
         words = text.split()
         translated_words = []
-        replaced_count = 0
         for w in words:
-            clean_w = re.sub(r'[^\w\s]', '', w)
+            # Strip punctuation without stripping Indic vowel matras
+            clean_w = re.sub(r'[\.,!\?;:\(\)\[\]\{\}"\'`~@#\$%\^&\*\-_=+/\\]', '', w)
             if clean_w in TRANSLATION_DICT:
                 translated_words.append(TRANSLATION_DICT[clean_w])
-                replaced_count += 1
             else:
                 translated_words.append(w)
         
         translated_text = " ".join(translated_words)
-        # Add high-fidelity English interpretation annotation
         return f"[Translated from {source_lang.upper()}]: {translated_text}"
 
     def resolve_institution(self, query_text: str, institution_list: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -148,12 +217,9 @@ class AIService:
             inst_id = inst.get("id", "").lower()
             aliases = [a.lower() for a in inst.get("aliases", [])]
 
-            # Direct check
             candidates = [inst_name, inst_id] + aliases
             for cand in candidates:
-                # SequenceMatcher ratio
                 ratio = difflib.SequenceMatcher(None, query_norm, cand).ratio()
-                # Substring match boost
                 if cand in query_norm or any(token in cand for token in query_norm.split() if len(token) > 4):
                     ratio = max(ratio, 0.78)
 
@@ -172,29 +238,65 @@ class AIService:
         }
 
     def classify_category(self, text: str) -> Tuple[str, float]:
-        """Classify complaint into one of 8 AICTE complaint categories."""
-        text_lower = text.lower()
-        scores = {}
-        for cat, kws in CATEGORY_KEYWORDS.items():
-            score = sum(2 if kw in text_lower else 0 for kw in kws)
-            if score > 0:
-                scores[cat] = score
+        """Classify complaint into one of 8 AICTE complaint categories using TF-IDF + Rules."""
+        clean_text = text.strip()
+        if not clean_text or len(clean_text) < 4:
+            return "unclassified", 0.0
 
-        if not scores:
-            return "fee fraud", 0.65
+        text_lower = clean_text.lower()
+        
+        # Filter pure non-grievance greetings or random gibberish
+        non_grievance_set = {"hello", "hi", "hey", "test", "testing", "asdf", "qwerty", "kuch", "bhi", "xyz", "check", "good", "morning", "evening", "okay", "ok", "fine"}
+        tokens = re.findall(r'\b\w+\b', text_lower)
+        if tokens and all(t in non_grievance_set for t in tokens):
+            return "unclassified", 0.0
+
+        # Translate if needed for combined lexical coverage
+        det_lang, _ = self.detect_language(clean_text)
+        eng_trans = self.translate(clean_text, det_lang).lower() if det_lang != "en" else text_lower
+
+        combined_text = f"{text_lower} {eng_trans}"
+
+        # 1. TF-IDF Cosine Similarity against Category Prototypes
+        try:
+            q_vec = self.tfidf_vectorizer.transform([combined_text])
+            sims = cosine_similarity(q_vec, self.category_tfidf_matrix)[0]
+        except Exception:
+            sims = np.zeros(len(self.categories_list))
+
+        # 2. Domain Rule & Keyword Scoring
+        scores = {}
+        for idx, cat in enumerate(self.categories_list):
+            kws = CATEGORY_KEYWORDS.get(cat, [])
+            kw_score = 0.0
+            for kw in kws:
+                pattern = r'(?<!\w)' + re.escape(kw.lower()) + r'(?!\w)'
+                if re.search(pattern, combined_text):
+                    kw_score += 3.5 if " " in kw else 2.0
+
+            tfidf_score = float(sims[idx]) * 10.0
+            scores[cat] = kw_score + tfidf_score
 
         best_cat = max(scores, key=scores.get)
-        confidence = min(0.96, 0.60 + (scores[best_cat] * 0.06))
+        max_score = scores[best_cat]
+
+        # Minimum threshold check to prevent false positives on random text
+        if max_score < 1.0:
+            return "unclassified", 0.0
+
+        confidence = min(0.98, max(0.70, 0.65 + (max_score * 0.04)))
         return best_cat, round(confidence, 2)
 
     def detect_process_stage(self, text: str, category: str) -> Tuple[str, float]:
         """Identify which process stage is failing."""
+        if category == "unclassified":
+            return "Pending Review", 0.0
+            
         text_lower = text.lower()
         for stage, kws in PROCESS_STAGE_KEYWORDS.items():
             if any(kw in text_lower for kw in kws):
                 return stage, 0.88
         
-        # Fallback based on category
         default_stage_map = {
             "fee fraud": "fee refund",
             "fake faculty": "faculty verification",
@@ -209,6 +311,9 @@ class AIService:
 
     def assess_severity_and_priority(self, text: str, category: str) -> Tuple[str, str]:
         """Assess severity (High/Med/Low) and priority (Critical/High/Med/Low)."""
+        if category == "unclassified":
+            return "Low", "Low"
+
         text_lower = text.lower()
         critical_triggers = ["suicide", "violence", "threat", "assault", "court stay", "mass boycott", "lakhs", "massive bribe"]
         high_triggers = ["fraud", "fake", "extortion", "withholding original documents", "degrees invalid", "sexual harassment", "strike"]
@@ -217,12 +322,14 @@ class AIService:
             return "High", "Critical"
         if any(trig in text_lower for trig in high_triggers) or category in ["fee fraud", "fake faculty"]:
             return "High", "High"
-        if category in ["infrastructure", "admission irregularity"]:
+        if category in ["infrastructure", "admission irregularity", "examination"]:
             return "Medium", "Medium"
         return "Low", "Low"
 
     def route_bureau(self, category: str) -> Tuple[str, float]:
         """Map category to AICTE bureau with confidence."""
+        if category == "unclassified":
+            return "Pending Review", 0.0
         bureau = BUREAU_MAPPING.get(category, "Finance")
         return bureau, 0.95
 

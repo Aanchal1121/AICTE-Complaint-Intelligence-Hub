@@ -76,6 +76,11 @@ class DuplicateCheckRequest(BaseModel):
     text: str
     institution_id: Optional[str] = None
 
+class ClassifierTestRequest(BaseModel):
+    text: str
+    institution_id: Optional[str] = None
+
+
 def mask_pii(complaint_dict: dict, current_user: Optional[User]):
     if not current_user:
         complaint_dict["complainant_name"] = "Anonymous Student"
@@ -351,6 +356,64 @@ def get_complaint(complaint_id: str, current_user: User = Depends(get_current_us
 
     return mask_pii(res, current_user)
 
+@router.post("/test-classifier")
+def test_classifier(
+    req: ClassifierTestRequest
+):
+    """
+    Dedicated endpoint for the Test AI Complaint Classifier Interactive Simulator.
+    Evaluates raw complaint text in real-time, performing multi-lingual detection,
+    TF-IDF prototype matching, domain rule classification, SLA, and bureau routing.
+    """
+    raw_text = req.text.strip()
+    if not raw_text or len(raw_text) < 4:
+        return {
+            "is_valid_grievance": False,
+            "predicted_category": "Insufficient Input",
+            "category_confidence": 0.0,
+            "routed_bureau": "Unassigned",
+            "priority": "None",
+            "sla_days": 0,
+            "detected_language": "Unknown",
+            "process_stage": "None",
+            "message": "Please enter a descriptive grievance in Hindi or English (minimum 4 characters)."
+        }
+
+    det_lang, _ = ai_service.detect_language(raw_text)
+    cat, cat_conf = ai_service.classify_category(raw_text)
+
+    if cat == "unclassified":
+        return {
+            "is_valid_grievance": False,
+            "predicted_category": "Unclassified / Low Confidence",
+            "category_confidence": 0.0,
+            "routed_bureau": "Pending Review",
+            "priority": "Low",
+            "sla_days": 30,
+            "detected_language": "Hindi" if det_lang == "hi" else ("Marathi" if det_lang == "mr" else "English"),
+            "process_stage": "Pending Review",
+            "message": "The AI classifier could not identify a recognized AICTE grievance category. Please provide specific grievance details (e.g., fee refund, fake faculty, ragging, broken equipment, exam delay, approval violation)."
+        }
+
+    bureau, _ = ai_service.route_bureau(cat)
+    severity, priority = ai_service.assess_severity_and_priority(raw_text, cat)
+    sla_days = SLA_POLICY.get(priority, 30)
+    stage, _ = ai_service.detect_process_stage(raw_text, cat)
+
+    lang_name_map = {"hi": "Hindi", "mr": "Marathi", "ta": "Tamil", "te": "Telugu", "bn": "Bengali", "en": "English"}
+
+    return {
+        "is_valid_grievance": True,
+        "predicted_category": cat,
+        "category_confidence": cat_conf,
+        "routed_bureau": bureau,
+        "priority": priority,
+        "sla_days": sla_days,
+        "detected_language": lang_name_map.get(det_lang, det_lang.upper()),
+        "process_stage": stage,
+        "message": f"Successfully classified as {cat} with {int(cat_conf * 100)}% confidence."
+    }
+
 @router.post("/check-duplicate")
 def check_duplicate(
     req: DuplicateCheckRequest,
@@ -361,21 +424,21 @@ def check_duplicate(
     Used by student portal while filing and by officials in workspace.
     """
     raw_text = req.text.strip()
-    if not raw_text or len(raw_text) < 10:
+    if not raw_text or len(raw_text) < 4:
         return {
             "has_duplicate": False,
             "similarity_score": 0.0,
             "matched_group_id": None,
             "similar_complaints": [],
-            "predicted_category": "fee fraud",
-            "routed_bureau": "Finance",
-            "priority": "Medium",
+            "predicted_category": "unclassified",
+            "routed_bureau": "Pending Review",
+            "priority": "Low",
             "sla_days": 30
         }
 
     det_lang, lang_conf = ai_service.detect_language(raw_text)
     eng_trans = ai_service.translate(raw_text, det_lang)
-    cat, cat_conf = ai_service.classify_category(eng_trans)
+    cat, cat_conf = ai_service.classify_category(raw_text)
     bureau, _ = ai_service.route_bureau(cat)
     severity, priority = ai_service.assess_severity_and_priority(eng_trans, cat)
     sla_days = SLA_POLICY.get(priority, 30)
@@ -474,6 +537,33 @@ def file_complaint(
     # Step 7: SLA assignment
     now = datetime.utcnow()
     due_date, sla_state = ai_service.calculate_sla(priority, now)
+
+    # 30-Day Anti-Duplicate Restriction (Prompt 1)
+    thirty_days_ago = now - timedelta(days=30)
+    complainant_identifiers = []
+    if current_user and getattr(current_user, "phone", None):
+        complainant_identifiers.append(Complaint.complainant_phone == current_user.phone)
+    if current_user and getattr(current_user, "email", None):
+        complainant_identifiers.append(Complaint.complainant_email == current_user.email)
+    if req.complainant_phone and len(req.complainant_phone.strip()) >= 5:
+        complainant_identifiers.append(Complaint.complainant_phone == req.complainant_phone.strip())
+    if req.complainant_email and "@" in req.complainant_email:
+        complainant_identifiers.append(Complaint.complainant_email == req.complainant_email.strip())
+
+    if complainant_identifiers:
+        prev_complaint = db.query(Complaint).filter(
+            Complaint.institution_id == matched_inst_id,
+            Complaint.category == category,
+            Complaint.created_date >= thirty_days_ago,
+            or_(*complainant_identifiers)
+        ).first()
+
+        if prev_complaint:
+            reg_date_str = prev_complaint.created_date.strftime("%d %b %Y") if prev_complaint.created_date else "recently"
+            raise HTTPException(
+                status_code=400,
+                detail=f"30-Day Duplicate Restriction: A complaint regarding {category.title()} against this institution is already registered (Ticket #{prev_complaint.id} filed on {reg_date_str}). Under AICTE Citizen Charter Regulations, duplicate filings within 30 days are restricted while the existing complaint is actively undergoing resolution."
+            )
 
     # Step 8: Duplicate detection & CaseGroup clustering
     existing_for_dup = db.query(Complaint).order_by(desc(Complaint.created_date)).limit(100).all()

@@ -65,15 +65,14 @@ Check all foreground/background combinations for WCAG contrast before release. D
 ### Navigation
 Navigation items are filtered by permissions, but backend authorization remains authoritative.
 
-**Student navigation**
-- Home
-- File a Complaint
-- Track My Complaints
-- Notifications
-- Help / Voice Guidance
+**Student navigation (Vertical left sidebar & top portal tabs)**
+- File Grievance (with 30-day anti-duplicate prevention rule & live warning)
+- My Grievances & Tracking (with Citizen Charter progress meter & custody milestones)
+- AICTE Resolution Timeline & Progress (Overall performance: on-time vs delayed, pending on-track vs overdue, average turnaround, lifecycle progress bar, year-wise comparative chart, prescribed category statutory vs service standard breakdown, disclosed metadata)
+- AICTE College Record Explorer (Searchable registry: AICTE Permanent ID, EoA approval status, approved programs, ICC, Anti-Ragging, SGRC committee compliance, and 1-click grievance action)
 
 **Official navigation**
-- My Inbox
+- My Inbox (`/official`)
 - Institution Search / Institution 360
 - Related Cases / Case Groups
 - Referrals
@@ -90,14 +89,14 @@ Navigation items are filtered by permissions, but backend authorization remains 
 **Regional Officer**
 - State-scoped case views and reports only.
 
-**Admin/Leadership**
-- National Dashboard
-- Root-Cause Insights
-- Reports / Analysis Studio
-- Connected Case Network
-- Users and Rules
-- Audit Log
-- Settings
+**Admin / Leadership navigation (Exact 7 left sidebar items)**
+- **1. Dashboard (`/admin`)**: National overview with 6 clickable KPI cards, state heatmap with volume/overdue/risk toggle, 12-month pendency bar chart, top 10 risky institutions with explainable factor breakdown modal, 6 bureaus performance panel with "Backlog Growing" badge, system SLA circular gauge, and unified filter bar.
+- **2. Insights (`/admin/insights`)**: Root-cause insight dashboard with executive AI insight strip, period comparisons, recurring process failure ranking, topic cluster treemap, and 6 evidence-backed insight cards with review and assign-to-bureau-head controls and supporting complaint drawer.
+- **3. Network (`/network`)**: Full-screen Connected Case Network with pattern highlight filters.
+- **4. Institutions (`/institutions`)**: Searchable/sortable institution table, 2-to-3 college radar comparison matrix, Institution 360 dossier, and Admin Regulatory Status Override modal with audit logging.
+- **5. Escalations (`/admin/escalations`)**: Chairman-level escalation queue with custody history, direction note / reassignment / due date extension / resolve actions, and cross-bureau conflict alert queue with mandatory resolution notes.
+- **6. Reports (`/analytics`)**: Visual Analytics Studio and report library with CSV, Excel, and PDF exports logged to the audit log.
+- **7. Settings (`/settings`)**: Multi-tab control center covering Users (RBAC validation), Rules & SLA thresholds, Category Routing Map, AI Oversight with precision metrics, CSV Ingestion with fuzzy match preview, and SHA-256 Hash-Chained Audit Trail with verification, tamper simulation, and restore tools.
 
 ## 5. Login Experience
 
@@ -290,14 +289,21 @@ For Admin/Leadership:
 
 Insights must be evidence-linked and phrased as hypotheses, not unsupported causal claims.
 
-## 12. Admin Settings
+## 12. Admin Settings & Controls
 
-One Settings page with tabs:
-- **Users:** list users and edit allowed role/scope fields.
-- **SLA & conflict rules:** editable table with validation and clear effect descriptions.
-- **Audit log:** filterable event list and **Verify audit trail** action.
+One unified Settings page with 6 comprehensive tabs:
+- **1. Users:** Table of users with role (`student`, `official`, `admin`), level (`Case Officer`, `Bureau Head`, `Regional Officer`), bureau, state, and status. Add user modal, role/level editing, and deactivate/reactivate controls with strict RBAC validation.
+- **2. Rules & SLA:**
+  - Editable SLA target days per complaint category.
+  - Cross-bureau conflict rules with toggle switches and thresholds.
+  - Duplicate similarity threshold slider with live preview of clustering count.
+  - Escalation timings (days before escalation to Bureau Head and Chairman's office).
+- **3. Categories & Routing:** Add or edit complaint categories, bureaus, and category-to-bureau automatic routing map.
+- **4. AI Oversight:** Real acceptance and override metrics (AI field changed, AI suggested value, official override value, actor, timestamp), with computed acceptance percentages per field.
+- **5. Data Import:** CSV bulk ingestion with automatic institution fuzzy match preview, confidence scoring, manual linking flags for low-confidence rows, and confirmation import.
+- **6. Audit Log:** Searchable and filterable by user, action, date, and entity. Cryptographic SHA-256 hash-chain verification with live pass/fail validation, plus a developer demo tool to simulate tampering and restore the valid chain.
 
-Use confirmation dialogs for impactful changes. Record settings changes in the audit log.
+Use confirmation dialogs for impactful changes. Every settings change, user edit, and conflict resolution writes a cryptographic hash-chained audit log entry.
 
 ## 13. Multilingual, Accessibility and Responsive Behaviour
 

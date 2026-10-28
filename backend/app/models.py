@@ -70,6 +70,12 @@ class User(Base):
     level = Column(String(64), nullable=False)  # "Student Complainant", "Case Officer", "Bureau Head", "Regional Officer", "Leadership"
     bureau = Column(String(64), nullable=True)  # "Finance", "Approval", "Academic", "Examination and Quality", "Inspection Cell", "Student Welfare Cell"
     state = Column(String(64), nullable=True)  # e.g. "Madhya Pradesh"
+    enrollment_no = Column(String(64), unique=True, nullable=True, index=True)
+    college_name = Column(String(255), nullable=True)
+    student_class = Column(String(64), nullable=True)
+    branch = Column(String(128), nullable=True)
+    gender = Column(String(32), nullable=True)
+    year = Column(String(32), nullable=True)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 

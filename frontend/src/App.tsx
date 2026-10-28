@@ -12,6 +12,8 @@ import { Institution360 } from './pages/Institution360';
 import { VisualAnalyticsStudio } from './pages/VisualAnalyticsStudio';
 import { ConnectedCaseNetwork } from './pages/ConnectedCaseNetwork';
 import { RootCauseDashboard } from './pages/RootCauseDashboard';
+import { AdminDashboard } from './pages/AdminDashboard';
+import { AdminEscalationsPage } from './pages/AdminEscalationsPage';
 import { SettingsPage } from './pages/SettingsPage';
 import './i18n';
 
@@ -39,7 +41,7 @@ const HomeRedirect: React.FC = () => {
   if (loading) return null;
   if (!user) return <Navigate to="/login" replace />;
   if (user.role === 'student') return <Navigate to="/student" replace />;
-  if (user.role === 'admin') return <Navigate to="/root-cause" replace />;
+  if (user.role === 'admin') return <Navigate to="/admin" replace />;
   return <Navigate to="/official" replace />;
 };
 
@@ -127,6 +129,36 @@ export const AppContent: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['official', 'admin']}>
                 <ConnectedCaseNetwork />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Admin National Leadership Dashboard (Section 1) */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Admin Root-Cause Insights (Section 2) */}
+          <Route
+            path="/admin/insights"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'official']}>
+                <RootCauseDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Admin Escalations & Conflicts (Section 5) */}
+          <Route
+            path="/admin/escalations"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminEscalationsPage />
               </ProtectedRoute>
             }
           />

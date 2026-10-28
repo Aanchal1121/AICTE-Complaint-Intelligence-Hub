@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
@@ -24,6 +24,29 @@ export const Header: React.FC<HeaderProps> = ({ onOpenDemoGuide, onToggleSidebar
 
   const [notifications, setNotifications] = useState<any[]>([]);
   const [showNotifs, setShowNotifs] = useState(false);
+  const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const langRef = useRef<HTMLDivElement>(null);
+  const [currentLang, setCurrentLang] = useState<string>(() => i18n.language || localStorage.getItem('cih_language') || 'en');
+
+  useEffect(() => {
+    const handleLangChange = (lng: string) => {
+      setCurrentLang(lng);
+    };
+    i18n.on('languageChanged', handleLangChange);
+    return () => {
+      i18n.off('languageChanged', handleLangChange);
+    };
+  }, [i18n]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (langRef.current && !langRef.current.contains(e.target as Node)) {
+        setLangMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -33,8 +56,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenDemoGuide, onToggleSidebar
     }
   }, [user]);
 
-  const changeLanguage = (lang: string) => {
-    i18n.changeLanguage(lang);
+  const changeLanguage = async (lang: string) => {
+    await i18n.changeLanguage(lang);
+    setCurrentLang(lang);
+    localStorage.setItem('cih_language', lang);
+    setLangMenuOpen(false);
   };
 
   const unreadCount = notifications.filter(n => !n.read).length;
@@ -77,7 +103,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenDemoGuide, onToggleSidebar
               <div className="flex flex-col justify-center select-none">
                 <div className="flex items-center space-x-1.5 leading-none mb-0.5">
                   <span className="text-[10px] uppercase tracking-wider font-bold text-teal-700 dark:text-teal-400 whitespace-nowrap">
-                    Govt. of India
+                    {t('govtOfIndia', 'Govt. of India')}
                   </span>
                   <span className="text-[9px] text-slate-300 dark:text-slate-700">•</span>
                   <span className="text-[10px] uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400 whitespace-nowrap">
@@ -85,7 +111,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenDemoGuide, onToggleSidebar
                   </span>
                 </div>
                 <div className="text-sm font-bold text-slate-900 dark:text-white leading-tight flex items-center gap-1.5 whitespace-nowrap">
-                  <span>AICTE Complaint Intelligence Hub</span>
+                  <span>{t('appName', 'AICTE Complaint Intelligence Hub')}</span>
                   <span className="text-[9px] text-teal-700 dark:text-cyan-400 font-bold bg-teal-50 dark:bg-teal-950/80 border border-teal-500/30 px-1.5 py-0.2 rounded font-mono">
                     CIH
                   </span>
@@ -97,26 +123,31 @@ export const Header: React.FC<HeaderProps> = ({ onOpenDemoGuide, onToggleSidebar
           {/* Right Side: Language, Accessibility, Theme, Notifications, Profile */}
           <div className="flex items-center space-x-2 shrink-0">
             {/* Language Switcher */}
-            <div className="relative group">
+            <div className="relative group" ref={langRef}>
               <button
+                onClick={() => setLangMenuOpen(!langMenuOpen)}
                 className="p-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100/80 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs flex items-center space-x-1"
                 aria-label="Change Language"
               >
                 <Globe className="w-3.5 h-3.5" />
-                <span className="uppercase font-semibold">{i18n.language}</span>
+                <span className="uppercase font-semibold">{currentLang}</span>
                 <ChevronDown className="w-3 h-3 opacity-60" />
               </button>
-              <div className="absolute right-0 mt-1 w-32 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xl py-1 hidden group-hover:block z-50">
+              <div
+                className={`absolute right-0 mt-1 w-32 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xl py-1 z-50 ${
+                  langMenuOpen ? 'block' : 'hidden group-hover:block'
+                }`}
+              >
                 {languages.map(l => (
                   <button
                     key={l.code}
                     onClick={() => changeLanguage(l.code)}
                     className={`w-full text-left px-3 py-1.5 text-xs hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-between ${
-                      i18n.language === l.code ? 'font-bold text-teal-600 dark:text-teal-400' : 'text-slate-700 dark:text-slate-300'
+                      currentLang === l.code ? 'font-bold text-teal-600 dark:text-teal-400' : 'text-slate-700 dark:text-slate-300'
                     }`}
                   >
                     <span>{l.label}</span>
-                    {i18n.language === l.code && <CheckCircle2 className="w-3 h-3 text-teal-600 dark:text-teal-400" />}
+                    {currentLang === l.code && <CheckCircle2 className="w-3 h-3 text-teal-600 dark:text-teal-400" />}
                   </button>
                 ))}
               </div>

@@ -15,6 +15,26 @@ from .routers import (
 # Create tables if not existing
 Base.metadata.create_all(bind=engine)
 
+# Auto-migrate student profile columns if missing in SQLite
+with engine.connect() as conn:
+    try:
+        from sqlalchemy import text
+        res = conn.execute(text("PRAGMA table_info(users)")).fetchall()
+        col_names = [r[1] for r in res]
+        for col, ctype in [
+            ('enrollment_no', 'TEXT'),
+            ('college_name', 'TEXT'),
+            ('student_class', 'TEXT'),
+            ('branch', 'TEXT'),
+            ('gender', 'TEXT'),
+            ('year', 'TEXT')
+        ]:
+            if col not in col_names:
+                conn.execute(text(f"ALTER TABLE users ADD COLUMN {col} {ctype}"))
+        conn.commit()
+    except Exception as e:
+        pass
+
 app = FastAPI(
     title="AICTE Complaint Intelligence Hub (CIH) API",
     description="Integrated dashboard and intelligence backend for monitoring institution complaint cases across AICTE bureaus",
